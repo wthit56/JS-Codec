@@ -43,7 +43,7 @@ _enum = function codec_enum(/* options... */) {
 			throw "Invalid value: " + JSON.stringify(value) + ".";
 		},
 		decode: function(data, result) {
-			if (data.length < size) { throw "Not enough data to decode."; }
+			if (data.length < size) { throw "Not enough data to decode: " + data + "; needs " + size + " bits."; }
 			
 			result.length += size;
 			
