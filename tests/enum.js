@@ -1,6 +1,6 @@
 console.log(require("inline-test/markup")(eval("(" + require("inline-test")(function() {
 
-var error = require("./error.js"),
+var error = require("./test.error.js"),
 	testdec = require("./test.decode.shallow.js");
 
 var codec = require("../index.js"),
@@ -25,6 +25,8 @@ testdec(numbers, "00", /* result.value: */ 1, /* .length: */ 2); ///
 testdec(numbers, "01", /* result.value: */ 2, /* .length: */ 2); ///
 testdec(numbers, "10", /* result.value: */ 3, /* .length: */ 2); ///
 error(function() { numbers.decode("11", stub); }); ///
+
+// TODO: failsafe read value
 
 
 var abc = _enum("a","b","c", numbers);
