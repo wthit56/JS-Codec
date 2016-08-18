@@ -1,7 +1,7 @@
 console.log(require("inline-test/markup")(eval("(" + require("inline-test")(function() {
 
 var error = require("./test.error.js"),
-	testdec = require("./test.decode.shallow.js");
+	result = require("./test.result.js");
 
 var codec = require("../index.js"),
 	_enum = require("../enum.js");
@@ -21,9 +21,9 @@ numbers.encode(2) === "01"; ///
 numbers.encode(3) === "10"; ///
 error(function() { numbers.encode(4); }); ///
 
-testdec(numbers, "00", /* result.value: */ 1, /* .length: */ 2); ///
-testdec(numbers, "01", /* result.value: */ 2, /* .length: */ 2); ///
-testdec(numbers, "10", /* result.value: */ 3, /* .length: */ 2); ///
+result.test(numbers, "00", /* result.value: */ 1, /* .length: */ 2); ///
+result.test(numbers, "01", /* result.value: */ 2, /* .length: */ 2); ///
+result.test(numbers, "10", /* result.value: */ 3, /* .length: */ 2); ///
 error(function() { numbers.decode("11", stub); }); ///
 
 // TODO: failsafe read value
@@ -36,8 +36,8 @@ abc.encode(2) == "1101"; ///
 
 // encode specific object
 
-testdec(abc, "10", /* result.value: */ "c", /* .length: */ 2); ///
-testdec(abc, "1100", /* result.value: */ 1, /* .length: */ 4); ///
+result.test(abc, "10", /* result.value: */ "c", /* .length: */ 2); ///
+result.test(abc, "1100", /* result.value: */ 1, /* .length: */ 4); ///
 error(function() { abc.decode("11", stub); }); ///
 // console.log(abc.decode("11", stub));
 
@@ -52,18 +52,18 @@ types.encode(o) === "011"; ///
 // types > abc is skipped
 types.encode(2) === "10001"; ///
 
-testdec(types, "000", /* result.value: */ 1,   /* .length: */ 3); ///
-testdec(types, "001", /* result.value: */ "a", /* .length: */ 3); ///
-testdec(types, "010", /* result.value: */ f,   /* .length: */ 3); ///
-testdec(types, "011", /* result.value: */ o,   /* .length: */ 3); ///
+result.test(types, "000", /* result.value: */ 1,   /* .length: */ 3); ///
+result.test(types, "001", /* result.value: */ "a", /* .length: */ 3); ///
+result.test(types, "010", /* result.value: */ f,   /* .length: */ 3); ///
+result.test(types, "011", /* result.value: */ o,   /* .length: */ 3); ///
 
-testdec(types, "10001", /* result.value: */ 2,   /* .length: */ 5); ///
-testdec(types, "10110", /* result.value: */ "c",   /* .length: */ 5); ///
+result.test(types, "10001", /* result.value: */ 2,   /* .length: */ 5); ///
+result.test(types, "10110", /* result.value: */ "c",   /* .length: */ 5); ///
 
 var types2 = _enum(1, "a", f, o, abc, numbers);
 // zero-based: types2 > (4) abc > (3) numbers > (1) 2
 // types2 > numbers is skipped
 types2.encode(2) === "1001101"; ///
-testdec(types2, "1001101", /* result.value: */ 2,   /* .length: */ 7); ///
+result.test(types2, "1001101", /* result.value: */ 2,   /* .length: */ 7); ///
 
 }) + ")()")));
