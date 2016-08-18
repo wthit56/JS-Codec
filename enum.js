@@ -13,7 +13,7 @@ function createFiller(length) {
 	};
 }
 
-_enum = function codec_enum(/* options... */) {
+codec_enum = function codec_enum(/* options... */) {
 	var options = Array.prototype.slice.call(arguments);
 	var _value, some = function(option) {
 		return codec.is(_value, option);
@@ -65,7 +65,7 @@ _enum = function codec_enum(/* options... */) {
 	};
 };
 
-if (typeof module !== "undefined") { module.exports = _enum; }
+if (typeof module !== "undefined") { module.exports = codec_enum; }
 
 /*
 
