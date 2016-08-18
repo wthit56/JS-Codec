@@ -1,6 +1,6 @@
 if (typeof require !== "undefined") { codec = require("./index.js"); }
 
-array = function codec_array(type, length) {
+codec_array = function codec_array(type, length) {
 	var _value, every = function(v) { return codec.is(v, _codec.type); };
 	
 	var _codec = {
@@ -65,4 +65,4 @@ array = function codec_array(type, length) {
 	return _codec;
 };
 
-if (typeof module !== "undefined") { module.exports = array; }
+if (typeof module !== "undefined") { module.exports = codec_array; }
