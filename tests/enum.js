@@ -66,4 +66,6 @@ var types2 = _enum(1, "a", f, o, abc, numbers);
 types2.encode(2) === "1001101"; ///
 result.test(types2, "1001101", /* result.value: */ 2,   /* .length: */ 7); ///
 
+// TODO: .fromArray()
+
 }) + ")()")));
