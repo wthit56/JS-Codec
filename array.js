@@ -34,11 +34,13 @@ array = function codec_array(type, length) {
 			return result.join("");
 		},
 		decode: function(data, result) {
+			if (!result) { throw "array codec decode :: no result object to write to"; }
+			
 			var value = [];
 			
 			var read = 0, readItem, i = 0, r = {}, markerLength = length ? 0 : 1;
 			
-			while (length ? i < l : data[0] === "1") {
+			while (length ? i < length : data[0] === "1") {
 				r.value = null; r.length = 0;
 				_codec.type.decode(data.substr(markerLength), r);
 				value.push(r.value);
@@ -51,9 +53,12 @@ array = function codec_array(type, length) {
 				i++;
 			}
 			
-			if (length) { read++; data = data.substr(1); }
+			if (!length) { read++; data = data.substr(1); }
 			
-			return value;
+			result.value = value;
+			result.length = read;
+			
+			return result;
 		}
 	};
 	
