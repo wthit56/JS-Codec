@@ -21,27 +21,7 @@ var manufacturer = _enum(
 var colour = _enum("reddish", "greenish", "bluish", "darkish", "lightish");
 */
 
-/*
-0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3  S
------------------------------------------------
-A B C D E F G H J K L M N O P R S V W X Y        5
-0 1 2 3 4 5 6 7 8 9                              4
-A B C D E F G H J K L M N O P R S T U V W X Y Z  5
------------------------------------------------
-0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3
-*/
 
-/*
-var registration = obj({
-	region: array(_enum.apply(null, "ABCDEFGHJKLMNOPRSVWXY".split("")), 2),
-	age: array(_enum.apply(null, "0123456789".split("")), 2),
-	id: array(_enum.apply(null, "ABCDEFGHJKLMNOPRSTUVWXYZ".split("")), 2)
-});
-
-registration.encode instanceof Function; ///
-registration.encode({ region: "A"+    "B", age: "0"+   "1", id: "K"+   "S"+     "S" }) ===
-                              "00000"+"00001"+  "0000"+"0001"+  "01001"+"10000"+"10000";
-*/
 
 var number = _enum(1, 2, 3), letter = _enum.apply(null, "ABC".split(""));
 number.name = "123";
@@ -68,7 +48,61 @@ result.test(simple, "001001", { numA: 3, numB: 2, grade: "A" }); ///
 simple.encode({ numA: 1, numB: 1, grade: "C" }) === "100000"; ///
 result.test(simple, "100000", { numA: 1, numB: 1, grade: "C" }); ///
 
-// TODO: further testing
+
+/*
+0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3  S
+-----------------------------------------------
+A B C D E F G H J K L M N O P R S V W X Y        5
+0 1 2 3 4 5 6 7 8 9                              4
+A B C D E F G H J K L M N O P R S T U V W X Y Z  5
+-----------------------------------------------
+0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3
+*/
+
+var registration = obj({
+	region: array(_enum.apply(null, "ABCDEFGHJKLMNOPRSVWXY".split("")), 2),
+	age: array(_enum.apply(null, "0123456789".split("")), 2),
+	id: array(_enum.apply(null, "ABCDEFGHJKLMNOPRSTUVWXYZ".split("")), 3)
+});
+
+registration.string = {
+	encode: function(string) {
+		var parts = string.match(/^([ABCDEFGHJKLMNOPRSVWXY]{2})(\d{2})([ABCDEFGHJKLMNOPRSTUVWXYZ]{3})$/);
+		return registration.encode({ region: parts[1].split(""), age: parts[2].split(""), id: parts[3].split("") });
+	},
+	decode: function(data) {
+		var r = { value: null, length: 0 };
+		registration.decode(data, r);
+		var v = r.value;
+		r = "" + v.region.join("") + v.age.join("") + v.id.join("");
+		return r;
+	}
+};
+
+registration.string.encode("AB01KSS") ===
+// age:    0      1
+           "0000"+"0001"+
+// id:     K       S       S
+           "01001"+"10000"+"10000"+
+// region: A       B
+          "00000"+"00001"; ///
+
+registration.string.decode("000000010100110000100000000000001") === "AB01KSS"; ///
+
+
+
+console.log("obj: " + registration.string.encode("AB01KSS") + "\n  " +
+	"arr: " + array(_enum.apply(null, "ABCDEFGHJKLMNOPRSTUVWXYZ0123456789".split("")), 7).encode("AB01KSS".split("")));
+
+/*
+registration.encode({ region: "AB".split(""), age: "01".split(""), id: "KSS".split("") }) ===
+
+console.log("0000"+"0001"+
+// id:     K       S       S
+"01001"+"10000"+"10000"+
+// region: A       B
+"00000"+"00001");
+*/
 
 }) + ")()")));
 
