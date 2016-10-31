@@ -35,24 +35,37 @@ codec_enum = function codec_enum(/* options... */) {
 				if (value === options[i]) {
 					return fill(i.toString(2));
 				}
-				else if ((options[i].__ === codec) && options[i].isType(value)) {
+				else if (codec.is(value, options[i])) {
 					return fill(i.toString(2)) + options[i].encode(value);
 				}
 			}
 			
-			throw "Invalid value: " + JSON.stringify(value) + ".";
+			console.trace();
+			throw "Codec enum could not encode, no options available for value: " + JSON.stringify(value) + ".";
 		},
 		decode: function(data, result) {
-			if (data.length < size) { throw "Not enough data to decode: " + data + "; needs " + size + " bits."; }
+			if (data.length < size) {
+				console.trace();
+				throw "Not enough data to decode: " + data + "; needs " + size + " bits.";
+			}
 			
 			result.length += size;
 			
 			var part = parseInt(data.substr(0, size), 2);
-			if (part >= options.length) { throw "Invalid data: " + part + "."; }
+			if (part >= options.length) {
+				console.trace();
+				throw "Invalid data: " + part + ".";
+			}
 			
 			var value = options[part];
-			if (value.__ === codec) {
-				var r = value.decode(data.substr(result.length), { value: null, length: 0 });
+			if (codec.isType(value)) {
+				var r, input;
+				try {
+					input = data.substr(result.length);
+					r = value.decode(input, { value: null, length: 0 });
+				} catch (e) {
+					throw e + "\nCodec enum decoding " + input;
+				}
 				result.value = r.value;
 				result.length += r.length;
 			}
@@ -63,6 +76,10 @@ codec_enum = function codec_enum(/* options... */) {
 			return result;
 		}
 	};
+};
+
+codec_enum.fromArray = function(arr) { // TODO: test
+	return codec_enum.apply(null, arr);
 };
 
 if (typeof module !== "undefined") { module.exports = codec_enum; }

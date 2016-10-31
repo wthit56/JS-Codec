@@ -16,17 +16,32 @@ codec_array = function codec_array(type, length) {
 		},
 		
 		encode: function(value) {
-			if (!Array.isArray(value)) { throw "Invalid value: " + JSON.stringify(value) + "."; }
-			else if (length && (value.length !== length)) { throw "Value has incorrect length: " + value.length + "."; }
+			if (!Array.isArray(value)) {
+				console.trace();
+				throw "Value not an array: " + JSON.stringify(value) + ".";
+			}
+			else if ((length != null) && (value.length !== length)) {
+				console.trace();
+				throw "Value has incorrect length: " + value.length + ".";
+			}
 			
 			var result = [];
 			
 			var itemMarker = length ? "" : "1";
 			for (var i = 0, l = length || value.length; i < l; i++) {
 				if (_codec.type.isType(value[i])) {
-					result.push(itemMarker + _codec.type.encode(value[i]));
+					var encoded;
+					try {
+						encoded = _codec.type.encode(value[i]);
+					} catch (e) {
+						throw e + "\nCodec array encoding index: " + i;
+					}
+					result.push(itemMarker + encoded);
 				}
-				else { throw "Invalid item [" + i + "] within value: " + JSON.stringify(value[i]) + "."; }
+				else {
+					console.trace();
+					throw "Codec array encoding [" + i + "] invalid item type: " + JSON.stringify(value[i]) + ".";
+				}
 			}
 			
 			if (!length) { result.push(0); }
@@ -34,7 +49,10 @@ codec_array = function codec_array(type, length) {
 			return result.join("");
 		},
 		decode: function(data, result) {
-			if (!result) { throw "array codec decode :: no result object to write to"; }
+			if (!result) {
+				console.trace();
+				throw "Array codec decode :: no result object to write to";
+			}
 			
 			var value = [];
 			
@@ -42,7 +60,13 @@ codec_array = function codec_array(type, length) {
 			
 			while (length ? i < length : data[0] === "1") {
 				r.value = null; r.length = 0;
-				_codec.type.decode(data.substr(markerLength), r);
+				var input;
+				try {
+					input = data.substr(markerLength);
+					_codec.type.decode(input, r);
+				} catch (e) {
+					throw e + "\nCodec array decoding " + input;
+				}
 				value.push(r.value);
 				
 				readItem = markerLength + r.length;
