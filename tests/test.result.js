@@ -1,4 +1,4 @@
-var similar = require("./test.similar.array.js");
+var similar = require("./test.similar.js");
 
 var result = module.exports = {
 	test: function(codec, data, expectedValue, expectedLength) {

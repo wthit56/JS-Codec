@@ -29,24 +29,29 @@ letter.name = "ABC";
 
 // sorted keys: grade, numA, numB
 var simple = obj({
+	s: true,
 	numA: number, numB: number,
 	grade: letter
 });
 
 simple.isType instanceof Function; ///
-simple.isType({ numA: 1, numB: 1, grade: "A" }); ///
+
+simple.isType({ s: true, numA: 1, numB: 1, grade: "A" }); ///
+!simple.isType({ s: "true", numA: 1, numB: 1, grade: "A" }); ///
+!simple.isType({ numA: 1, numB: 1, grade: "A" }); ///
+
 !simple.isType({}); ///
-!simple.isType({ numA: 1, numB: 1, grade: "F" }); ///
-!simple.isType({ numB: 1, grade: "B" }); ///
-simple.isType({ numB: 1, grade: "B", numA: 3 }); ///
-simple.isType({ numA: 3, numB: 1, numC: 2, grade: "B" }); ///
+!simple.isType({ s: true, numA: 1, numB: 1, grade: "F" }); ///
+!simple.isType({ s: true, numB: 1, grade: "B" }); ///
+simple.isType({ s: true, numB: 1, grade: "B", numA: 3 }); ///
+simple.isType({ s: true, numA: 3, numB: 1, numC: 2, grade: "B" }); ///
 
 simple.encode instanceof Function; ///
-simple.encode({ numA: 3, numB: 2, grade: "A" }) === "001001"; ///
-result.test(simple, "001001", { numA: 3, numB: 2, grade: "A" }); ///
+simple.encode({ s: true, numA: 3, numB: 2, grade: "A" }) === "001001"; ///
+result.test(simple, "001001", { s: true, numA: 3, numB: 2, grade: "A" }); ///
 
-simple.encode({ numA: 1, numB: 1, grade: "C" }) === "100000"; ///
-result.test(simple, "100000", { numA: 1, numB: 1, grade: "C" }); ///
+simple.encode({ s: true, numA: 1, numB: 1, grade: "C" }) === "100000"; ///
+result.test(simple, "100000", { s: true, numA: 1, numB: 1, grade: "C" }); ///
 
 
 /*
